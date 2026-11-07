@@ -387,6 +387,21 @@ document.getElementById("shareBtn").addEventListener("click", async () => {
   else { prompt("", text); }
 });
 
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
+  lang = b.dataset.lang;
+  try { localStorage.setItem("lang", lang); } catch (e) {}
+  render();
+}));
+
+btn.addEventListener("click", () => {
+  if (stamped) return;
+  stamped = true;
+  try { localStorage.setItem("stamped", "1"); } catch (e) {}
+  if (navigator.vibrate) navigator.vibrate(60);
+  render();
+  confetti();
+});
+
 /* tiny confetti */
 function confetti() {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
