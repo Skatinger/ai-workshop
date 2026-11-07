@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gutschein für Francesco – Linie AI</title>
+<meta name="description" content="Ein Geburtstagsgutschein für Francesco: persönlicher KI-Workshop mit Alex und Chrige.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚌</text></svg>">
+<style>
+  :root{
+    --red:#d7171f; --red-dark:#a80f15; --ink:#1d1d1f; --paper:#fffaf2;
+    --muted:#6b6b70; --line:#e7dfd2; --yellow:#ffd23f;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:#f3ede3; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:0 18px 48px}
+
+  /* top bar */
+  .top{display:flex;justify-content:space-between;align-items:center;padding:14px 0}
+  .brand{font-weight:800;letter-spacing:.02em;display:flex;gap:8px;align-items:center}
+  .brand .dot{width:12px;height:12px;border-radius:50%;background:var(--red)}
+  .lang{display:flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
+  .lang button{border:0;background:transparent;padding:6px 12px;font:inherit;font-weight:700;cursor:pointer;color:var(--ink)}
+  .lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+  /* street with driving cars */
+  .street{position:relative;height:96px;margin:6px -18px 0;overflow:hidden;
+    background:linear-gradient(#f3ede3 0 55%,#cfc8bd 55% 100%)}
+  .street::after{content:"";position:absolute;left:0;right:0;top:76%;height:4px;
+    background:repeating-linear-gradient(90deg,#fff 0 28px,transparent 28px 56px)}
+  .car{position:absolute;bottom:22px;left:-160px;font-size:40px;animation:drive linear infinite}
+  .car .plate{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);
+    background:#fff;border:1.5px solid #222;border-radius:3px;font-size:10px;font-weight:800;
+    padding:0 4px;white-space:nowrap;letter-spacing:.04em}
+  .car.bus{font-size:52px;bottom:18px;animation-duration:11s;z-index:2}
+  .car.bus .plate{background:var(--yellow)}
+  .car.c1{animation-duration:7s;animation-delay:-2s}
+  .car.c2{animation-duration:9s;animation-delay:-6s}
+  .car.c3{animation-duration:6s;animation-delay:-4s}
+  @keyframes drive{from{transform:translateX(0) scaleX(-1)}to{transform:translateX(calc(100vw + 320px)) scaleX(-1)}}
+  .car .plate{transform:translateX(-50%) scaleX(-1)}
+  @media (min-width:600px){@keyframes drive{from{transform:translateX(0) scaleX(-1)}to{transform:translateX(900px) scaleX(-1)}}}
+  @media (prefers-reduced-motion:reduce){.car{animation:none;left:auto}.car.bus{left:40%}.car.c1{left:10%}.car.c2{left:70%}.car.c3{display:none}}
+
+  h1{font-size:clamp(28px,7vw,40px);line-height:1.1;margin:22px 0 10px}
+  h1 .accent{color:var(--red)}
+  .lead p{margin:0 0 12px;font-size:17px}
+  .lead strong{color:var(--red-dark)}
+
+  /* ticket */
+  .ticket{position:relative;margin:28px 0;background:var(--paper);border-radius:16px;
+    box-shadow:0 10px 30px rgba(60,40,10,.15);overflow:hidden}
+  .ticket-head{background:var(--red);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+  .ticket-head .line{font-weight:900;font-size:22px;letter-spacing:.03em}
+  .ticket-head .badge{background:#fff;color:var(--red);font-weight:900;border-radius:8px;padding:2px 10px;font-size:20px}
+  .ticket-body{padding:16px 18px 6px;display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+  .field .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+  .field .v{font-weight:800;font-size:17px}
+  .field.wide{grid-column:1/-1}
+  .perf{position:relative;border-top:2px dashed var(--line);margin:14px 0 0}
+  .perf::before,.perf::after{content:"";position:absolute;top:-13px;width:24px;height:24px;border-radius:50%;background:#f3ede3}
+  .perf::before{left:-12px}.perf::after{right:-12px}
+  .ticket-foot{padding:14px 18px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .barcode{height:38px;flex:1;max-width:200px;
+    background:repeating-linear-gradient(90deg,#222 0 2px,transparent 2px 4px,#222 4px 7px,transparent 7px 9px,#222 9px 10px,transparent 10px 13px)}
+  .no{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)}
+
+  .stamp{position:absolute;right:18px;top:64px;width:120px;height:120px;border:4px solid var(--red);
+    border-radius:50%;color:var(--red);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-weight:900;text-transform:uppercase;text-align:center;line-height:1.05;font-size:15px;
+    transform:rotate(-14deg) scale(2.4);opacity:0;pointer-events:none;mix-blend-mode:multiply;
+    background:rgba(255,255,255,.2)}
+  .stamp small{font-size:10px;font-weight:700;margin-top:4px}
+  .stamped .stamp{animation:stamp .45s cubic-bezier(.2,1.4,.4,1) forwards}
+  @keyframes stamp{to{transform:rotate(-14deg) scale(1);opacity:.9}}
+
+  .btn{display:block;width:100%;border:0;border-radius:14px;padding:16px 20px;font:inherit;font-size:18px;font-weight:800;
+    background:var(--ink);color:#fff;cursor:pointer;box-shadow:0 4px 0 #000;transition:transform .08s}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #000}
+  .btn[disabled]{background:#3a8d3a;box-shadow:0 4px 0 #245f24;cursor:default}
+  .msg{margin:14px 0 0;padding:14px 16px;border-radius:12px;background:#fff;border-left:5px solid #3a8d3a;display:none}
+  .msg.show{display:block;animation:pop .3s ease-out}
+  @keyframes pop{from{transform:translateY(8px);opacity:0}}
+
+  /* timetable */
+  h2{font-size:24px;margin:40px 0 4px}
+  .sub{color:var(--muted);margin:0 0 18px}
+  .route{list-style:none;margin:0;padding:0;position:relative}
+  .route::before{content:"";position:absolute;left:15px;top:10px;bottom:10px;width:4px;background:var(--red);border-radius:2px}
+  .stop{position:relative;padding:0 0 18px 48px}
+  .stop::before{content:"";position:absolute;left:7px;top:4px;width:20px;height:20px;border-radius:50%;background:#fff;border:4px solid var(--red)}
+  .stop.end::before{background:var(--red)}
+  .stop .t{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--red-dark);font-weight:700}
+  .stop .n{font-weight:800;font-size:17px}
+  .stop .d{color:#444;font-size:15px}
+
+  .note{margin-top:28px;background:var(--yellow);border-radius:14px;padding:16px 18px;font-weight:600}
+  footer{text-align:center;color:var(--muted);font-size:14px;margin-top:36px}
+  canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><span class="dot"></span><span data-i="brand"></span></div>
+    <div class="lang" role="group" aria-label="Sprache / Lingua">
+      <button type="button" data-lang="de" aria-pressed="true">DE</button>
+      <button type="button" data-lang="it" aria-pressed="false">IT</button>
+    </div>
+  </div>
+
+  <div class="street" aria-hidden="true">
+    <div class="car c1">🚗<span class="plate">AI 60</span></div>
+    <div class="car c2">🚙<span class="plate">AI 1966</span></div>
+    <div class="car c3">🚕<span class="plate">AI 42</span></div>
+    <div class="car bus">🚌<span class="plate">FRANCESCO</span></div>
+  </div>
+
+  <h1 data-i="title"></h1>
+  <div class="lead" data-i="lead"></div>
+
+  <div class="ticket" id="ticket">
+    <div class="ticket-head">
+      <span class="line" data-i="line"></span>
+      <span class="badge">60</span>
+    </div>
+    <div class="ticket-body">
+      <div class="field"><div class="k" data-i="kPassenger"></div><div class="v">Francesco</div></div>
+      <div class="field"><div class="k" data-i="kValid"></div><div class="v" data-i="vValid"></div></div>
+      <div class="field"><div class="k" data-i="kZone"></div><div class="v" data-i="vZone"></div></div>
+      <div class="field"><div class="k" data-i="kPrice"></div><div class="v" data-i="vPrice"></div></div>
+      <div class="field wide"><div class="k" data-i="kCrew"></div><div class="v">Alex &amp; Chrige</div></div>
+    </div>
+    <div class="perf"></div>
+    <div class="ticket-foot">
+      <div class="barcode" aria-hidden="true"></div>
+      <div class="no">Nr. 1966-2026</div>
+    </div>
+    <div class="stamp" aria-hidden="true"><span data-i="stamp"></span><small>Bern · 2026</small></div>
+  </div>
+
+  <button class="btn" id="stampBtn" type="button" data-i="btn"></button>
+  <div class="msg" id="msg" role="status" data-i="msg"></div>
+
+  <h2 data-i="h2"></h2>
+  <p class="sub" data-i="sub"></p>
+  <ol class="route" id="route"></ol>
+
+  <div class="note" data-i="note"></div>
+
+  <footer data-i="footer"></footer>
+</div>
+
+<script>
+const T = {
+  de: {
+    brand: "Linie AI",
+    title: 'Lieber Francesco,<br><span class="accent">happy 60!</span> 🎉',
+    lead: `<p>Du hast es sicher schon bemerkt: <strong>AI ist überall.</strong> Sogar auf den Nummernschildern.</p>
+           <p>Darum steigt jetzt nicht nur ein Fahrgast bei dir ein, sondern gleich die künstliche Intelligenz.</p>
+           <p>Dieser Gutschein ist dein Ticket für einen <strong>persönlichen KI-Workshop mit Alex und Chrige</strong>. Kein Kurs, keine Prüfung, kein Fachchinesisch. Nur wir drei, ein Kaffee und ein paar verblüffende Tricks, mit denen ChatGPT ab sofort für dich arbeitet.</p>`,
+    line: "LINIE AI",
+    kPassenger: "Fahrgast", kValid: "Gültig ab", vValid: "60 Jahren",
+    kZone: "Zone", vZone: "Alle Zonen", kPrice: "Preis", vPrice: "Unbezahlbar",
+    kCrew: "Chauffeure für einen Tag",
+    stamp: "Entwertet",
+    btn: "🎫 Ticket entwerten",
+    btnDone: "✅ Ticket entwertet",
+    msg: "<strong>Gute Fahrt!</strong> Dein Gutschein ist eingelöst. Sag Alex oder Chrige Bescheid, dann machen wir einen Termin ab.",
+    h2: "Fahrplan 🚏",
+    sub: "Unsere Route durch den Workshop. Abfahrt nach Lust und Laune, Verspätungen ausdrücklich erlaubt.",
+    stops: [
+      ["Abfahrt", "Hallo ChatGPT", "Wir zeigen dir, wie du einfach mit der KI plauderst, ganz ohne Programmieren."],
+      ["Halt 1", "Kühlschrank-Kunst", "Foto vom Kühlschrank machen, und die KI schlägt ein Znacht vor."],
+      ["Halt 2", "Briefe ohne Kopfweh", "Mail an die Versicherung oder ein Gruss an die Familie, in Sekunden geschrieben."],
+      ["Halt 3", "Ferien im Handumdrehen", "Reiseplan, Restaurants und Ausflüge, massgeschneidert für dich."],
+      ["Halt 4", "Bilder-Zauberei", "Wir lassen die KI ein Bild malen. Vielleicht einen Bus voller AI-Autos?"],
+      ["Endstation", "Apéro 🥂", "Mit allem, was du gelernt hast, darfst du die KI gleich fragen, was wir trinken."]
+    ],
+    note: "💡 Kleiner Tipp: Du brauchst nichts vorzubereiten. Nur dein Handy und gute Laune mitbringen.",
+    footer: "Mit viel Liebe von Alex &amp; Chrige · Gültig auf allen Linien, von Bern bis Appenzell 🚌"
+  },
+  it: {
+    brand: "Linea AI",
+    title: 'Caro Francesco,<br><span class="accent">buon 60°!</span> 🎉',
+    lead: `<p>L'avrai già notato: <strong>l'AI è dappertutto.</strong> Perfino sulle targhe.</p>
+           <p>Per questo, oggi sul tuo bus non sale solo un passeggero, ma direttamente l'intelligenza artificiale.</p>
+           <p>Questo buono è il tuo biglietto per un <strong>workshop personale sull'AI con Alex e Chrige</strong>. Niente corsi, niente esami, niente paroloni. Solo noi tre, un caffè e qualche trucco sorprendente per far lavorare ChatGPT per te.</p>`,
+    line: "LINEA AI",
+    kPassenger: "Passeggero", kValid: "Valido da", vValid: "60 anni",
+    kZone: "Zona", vZone: "Tutte le zone", kPrice: "Prezzo", vPrice: "Inestimabile",
+    kCrew: "Autisti per un giorno",
+    stamp: "Obliterato",
+    btn: "🎫 Oblitera il biglietto",
+    btnDone: "✅ Biglietto obliterato",
+    msg: "<strong>Buon viaggio!</strong> Il tuo buono è riscattato. Dillo ad Alex o a Chrige e fissiamo una data.",
+    h2: "Orario 🚏",
+    sub: "Il nostro percorso nel workshop. Partenza quando vuoi, ritardi espressamente permessi.",
+    stops: [
+      ["Partenza", "Ciao ChatGPT", "Ti mostriamo come chiacchierare con l'AI, senza programmare niente."],
+      ["Fermata 1", "Arte del frigorifero", "Fai una foto al frigo e l'AI ti propone la cena."],
+      ["Fermata 2", "Lettere senza mal di testa", "Una mail all'assicurazione o un saluto alla famiglia, scritti in pochi secondi."],
+      ["Fermata 3", "Vacanze in un attimo", "Itinerario, ristoranti e gite, su misura per te."],
+      ["Fermata 4", "Magia delle immagini", "Facciamo dipingere un quadro all'AI. Magari un bus pieno di macchine AI?"],
+      ["Capolinea", "Aperitivo 🥂", "Con tutto quello che hai imparato, puoi chiedere subito all'AI cosa beviamo."]
+    ],
+    note: "💡 Un piccolo consiglio: non devi preparare niente. Porta solo il telefono e il buon umore.",
+    footer: "Con tanto affetto da Alex &amp; Chrige · Valido su tutte le linee, da Berna all'Appenzello 🚌"
+  }
+};
+
+let lang = "de", stamped = false;
+try {
+  const q = new URLSearchParams(location.search).get("lang");
+  const saved = localStorage.getItem("lang");
+  if (q === "it" || q === "de") lang = q; else if (saved === "it" || saved === "de") lang = saved;
+  stamped = localStorage.getItem("stamped") === "1";
+} catch (e) {}
+
+const btn = document.getElementById("stampBtn");
+const msg = document.getElementById("msg");
+const ticket = document.getElementById("ticket");
+
+function render() {
+  const t = T[lang];
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i]").forEach(el => {
+    const v = t[el.dataset.i];
+    if (typeof v === "string") el.innerHTML = v;
+  });
+  document.title = lang === "de" ? "Gutschein für Francesco – Linie AI" : "Buono per Francesco – Linea AI";
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+  document.getElementById("route").innerHTML = t.stops.map((s, i) =>
+    `<li class="stop${i === t.stops.length - 1 ? " end" : ""}"><div class="t">${s[0]}</div><div class="n">${s[1]}</div><div class="d">${s[2]}</div></li>`
+  ).join("");
+  if (stamped) { btn.innerHTML = t.btnDone; btn.disabled = true; ticket.classList.add("stamped"); msg.classList.add("show"); }
+}
+
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
+  lang = b.dataset.lang;
+  try { localStorage.setItem("lang", lang); } catch (e) {}
+  render();
+}));
+
+btn.addEventListener("click", () => {
+  if (stamped) return;
+  stamped = true;
+  try { localStorage.setItem("stamped", "1"); } catch (e) {}
+  if (navigator.vibrate) navigator.vibrate(60);
+  render();
+  confetti();
+});
+
+/* tiny confetti */
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = document.getElementById("confetti"), x = c.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  c.width = innerWidth * dpr; c.height = innerHeight * dpr; x.scale(dpr, dpr);
+  const colors = ["#d7171f", "#ffd23f", "#1d1d1f", "#3a8d3a", "#ffffff"];
+  const parts = Array.from({ length: 140 }, () => ({
+    x: innerWidth / 2, y: innerHeight * 0.45,
+    vx: (Math.random() - 0.5) * 14, vy: Math.random() * -14 - 4,
+    s: 5 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4,
+    c: colors[(Math.random() * colors.length) | 0]
+  }));
+  let f = 0;
+  (function tick() {
+    x.clearRect(0, 0, innerWidth, innerHeight);
+    parts.forEach(p => {
+      p.vy += 0.35; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c;
+      x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore();
+    });
+    if (++f < 180) requestAnimationFrame(tick); else x.clearRect(0, 0, innerWidth, innerHeight);
+  })();
+}
+
+render();
+</script>
+</body>
+</html>
