@@ -100,7 +100,19 @@
   .stop .n{font-weight:800;font-size:17px}
   .stop .d{color:#444;font-size:15px}
 
-  .note{margin-top:28px;background:var(--yellow);border-radius:14px;padding:16px 18px;font-weight:600}
+  .checklist{background:#fff;border-radius:16px;padding:6px 16px;box-shadow:0 6px 20px rgba(60,40,10,.08)}
+  .checklist .grp{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:14px 0 2px}
+  .check{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer;font-weight:600}
+  .check:last-child{border-bottom:0}
+  .check input{appearance:none;-webkit-appearance:none;flex:none;width:26px;height:26px;border:2.5px solid var(--ink);border-radius:7px;display:grid;place-content:center;margin:0;cursor:pointer;background:#fff}
+  .check input::after{content:"✓";color:#fff;font-weight:900;font-size:17px;line-height:1;transform:scale(0);transition:transform .12s}
+  .check input:checked{background:var(--red);border-color:var(--red)}
+  .check input:checked::after{transform:scale(1)}
+  .check input:disabled{opacity:.6}
+  .idea{display:block;margin:16px 0;font-weight:700}
+  .idea input{display:block;width:100%;margin-top:6px;padding:13px 14px;border:2px solid var(--line);border-radius:12px;font:inherit;font-weight:500;background:#fff}
+  .idea input:focus{outline:none;border-color:var(--ink)}
+  .btn.secondary{margin-top:12px;background:#fff;color:var(--ink);border:2px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
   footer{text-align:center;color:var(--muted);font-size:14px;margin-top:36px}
   canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
@@ -156,6 +168,14 @@
   <p class="sub" data-i="sub"></p>
   <ol class="route" id="route"></ol>
 
+  <h2 data-i="h3"></h2>
+  <p class="sub" data-i="sub3"></p>
+  <div class="checklist" id="checklist"></div>
+  <label class="idea"><span data-i="ideaLabel"></span><input id="idea" type="text" maxlength="200"></label>
+  <button class="btn" id="copyBtn" type="button" data-i="copyBtn"></button>
+  <button class="btn secondary" id="shareBtn" type="button" data-i="shareBtn" hidden></button>
+  <div class="msg" id="copied" role="status" data-i="copied"></div>
+
   <footer data-i="footer"></footer>
 </div>
 
@@ -164,9 +184,9 @@ const T = {
   de: {
     brand: "Linie AI",
     title: 'Lieber Francesco,<br><span class="accent">happy 60!</span> 🎉',
-    lead: `<p>Du hast es sicher schon bemerkt: <strong>AI ist überall.</strong> Sogar auf den Nummernschildern.</p>
-           <p>Darum steigt jetzt nicht nur ein Fahrgast bei dir ein, sondern gleich die künstliche Intelligenz.</p>
-           <p>Dieser Gutschein ist dein Ticket für einen <strong>persönlichen KI-Workshop mit Alex</strong>, und Chrige fährt auch mit. Kein Kurs, keine Prüfung, kein Fachchinesisch. Nur wir, ein Kaffee und ein paar verblüffende Tricks, mit denen die KI ab sofort für dich arbeitet.</p>`,
+    lead: `<p>Herzlichen Glückwunsch zu 60 Jahren! Und keine Sorge: <strong>60 ist keine Endstation.</strong> Höchstens ein Umsteigeort, und wer umsteigt, entdeckt neue Linien. Neues lernen geht in jedem Alter, und zusammen macht es am meisten Spass.</p>
+           <p>Eine dieser neuen Linien fährt gerade überall herum. Du hast es sicher bemerkt: <strong>AI ist überall.</strong> Sogar auf den Nummernschildern.</p>
+           <p>Darum ist dieser Gutschein dein Ticket für einen <strong>persönlichen KI-Workshop mit Alex</strong>, und Chrige fährt auch mit. Kein Kurs, keine Prüfung, kein Fachchinesisch. Nur wir, ein Kaffee und ein paar verblüffende Tricks, mit denen die KI ab sofort für dich arbeitet.</p>`,
     line: "LINIE AI",
     kPassenger: "Fahrgast", kValid: "Gültig ab", vValid: "60 Jahren",
     kZone: "Zone", vZone: "Alle Zonen", kPrice: "Preis", vPrice: "Unbezahlbar",
@@ -174,26 +194,38 @@ const T = {
     stamp: "Entwertet",
     btn: "🎫 Ticket entwerten",
     btnDone: "✅ Ticket entwertet",
-    msg: "<strong>Gute Fahrt!</strong> Dein Gutschein ist eingelöst. Sag Alex Bescheid, dann machen wir einen Termin ab.",
+    msg: "<strong>Gute Fahrt!</strong> Dein Gutschein ist eingelöst. Stell unten deine Route zusammen und schick sie Alex. 👇",
     h2: "Fahrplan 🚏",
     sub: "Unsere Route durch den Workshop. Abfahrt nach Lust und Laune, Verspätungen ausdrücklich erlaubt.",
     stops: [
       ["Abfahrt", "Hallo KI", "Wie man mit ChatGPT & Co. einfach drauflos plaudert, ganz ohne Programmieren."],
       ["Halt 1", "Kollegen-Kunst", "Ein Foto vom Arbeitskollegen, und die KI macht ihn zum Astronauten, Ritter oder Tramchauffeur. Lachen garantiert."],
-      ["Halt 2", "Kühlschrank-Znacht", "Foto vom Kühlschrank machen, und die KI schlägt vor, was man daraus kochen kann."],
-      ["Halt 3", "Deine eigene App", "Wir bauen zusammen eine kleine Handy-App, nur für dich. Einfach beschreiben, was sie können soll."],
-      ["Halt 4", "Was läuft in Bern?", "Die KI meldet dir automatisch Events, Märkte und Demos in der Stadt. Damit du weisst, wo heute gefeiert wird und wo der Bus nicht durchkommt."],
-      ["Halt 5", "Dein eigener Song", "Ein Lied über dich, deinen Bus oder deinen 60. Geburtstag. Die KI schreibt und singt es in einer Minute."],
+      ["Halt 2", "Der Sugo-Retter 🍝", "Ein Italiener findet immer einen Sugo. Wir bauen dir deine eigene kleine App: Kühlschrank fotografieren, und sie sagt dir, wie aus den Resten eine Sauce für die Pasta wird. Zwei Rüebli, ein halber Peperoni und ein Rest Rahm? Ecco, Znacht!"],
+      ["Halt 3", "Was läuft in Bern?", "Die KI meldet dir automatisch Events, Märkte und Demos in der Stadt. Damit du weisst, wo heute gefeiert wird und wo der Bus nicht durchkommt."],
+      ["Halt 4", "Dein eigener Song", "Ein Lied über dich, deinen Bus oder deinen 60. Geburtstag. Die KI schreibt und singt es in einer Minute."],
       ["Endstation", "Apéro 🥂", "Und zum Schluss fragen wir die KI, was wir trinken sollen."]
     ],
+    h3: "Deine Route 🗺️",
+    sub3: "Du bestimmst, wo wir anhalten. Häkchen setzen, Haltestellen überspringen oder Extrafahrten dazubuchen.",
+    extras: ["Ferien planen in fünf Minuten", "Ein altes Foto auffrischen und einfärben", "Pflanzen per Foto erkennen", "Live-Übersetzer für die nächsten Ferien"],
+    apero: "Apéro (nicht verhandelbar 🥂)",
+    extraLabel: "Extrafahrten",
+    ideaLabel: "Eigener Wunsch",
+    ideaPh: "z.B. etwas für den Garten …",
+    copyBtn: "📋 Kopieren und Alex schicken",
+    shareBtn: "📤 Direkt an Alex senden",
+    copied: "<strong>Kopiert!</strong> Jetzt einfach im WhatsApp an Alex einfügen und senden.",
+    copyHead: "Hoi Alex! 🎫 Ich löse meinen KI-Gutschein ein. Das ist meine Route:",
+    copyIdea: "Eigener Wunsch",
+    copyEnd: "Wann fahren wir los? 🚌\nFrancesco",
     footer: "Mit viel Liebe von Alex · Gültig auf allen Linien, von Bern bis Appenzell 🚌"
   },
   it: {
     brand: "Linea AI",
     title: 'Caro Francesco,<br><span class="accent">buon 60°!</span> 🎉',
-    lead: `<p>L'avrai già notato: <strong>l'AI è dappertutto.</strong> Perfino sulle targhe.</p>
-           <p>Per questo, oggi sul tuo bus non sale solo un passeggero, ma direttamente l'intelligenza artificiale.</p>
-           <p>Questo buono è il tuo biglietto per un <strong>workshop personale sull'AI con Alex</strong>, e anche Chrige sale a bordo. Niente corsi, niente esami, niente paroloni. Solo noi, un caffè e qualche trucco sorprendente per far lavorare l'AI per te.</p>`,
+    lead: `<p>Tanti auguri per i tuoi 60 anni! E niente paura: <strong>60 non è il capolinea.</strong> Al massimo una fermata dove si cambia linea, e chi cambia linea scopre nuovi percorsi. Imparare qualcosa di nuovo si può a ogni età, e insieme è molto più divertente.</p>
+           <p>Una di queste nuove linee gira ormai dappertutto. L'avrai già notato: <strong>l'AI è ovunque.</strong> Perfino sulle targhe.</p>
+           <p>Per questo, questo buono è il tuo biglietto per un <strong>workshop personale sull'AI con Alex</strong>, e anche Chrige sale a bordo. Niente corsi, niente esami, niente paroloni. Solo noi, un caffè e qualche trucco sorprendente per far lavorare l'AI per te.</p>`,
     line: "LINEA AI",
     kPassenger: "Passeggero", kValid: "Valido da", vValid: "60 anni",
     kZone: "Zona", vZone: "Tutte le zone", kPrice: "Prezzo", vPrice: "Inestimabile",
@@ -201,18 +233,30 @@ const T = {
     stamp: "Obliterato",
     btn: "🎫 Oblitera il biglietto",
     btnDone: "✅ Biglietto obliterato",
-    msg: "<strong>Buon viaggio!</strong> Il tuo buono è riscattato. Dillo ad Alex e fissiamo una data.",
+    msg: "<strong>Buon viaggio!</strong> Il tuo buono è riscattato. Componi qui sotto il tuo percorso e mandalo ad Alex. 👇",
     h2: "Orario 🚏",
     sub: "Il nostro percorso nel workshop. Partenza quando vuoi, ritardi espressamente permessi.",
     stops: [
       ["Partenza", "Ciao AI", "Come chiacchierare con ChatGPT & co., senza programmare niente."],
       ["Fermata 1", "Ritratti tra colleghi", "Una foto di un collega e l'AI lo trasforma in astronauta, cavaliere o tranviere. Risate garantite."],
-      ["Fermata 2", "Cena dal frigo", "Fai una foto al frigorifero e l'AI ti propone cosa cucinare."],
-      ["Fermata 3", "La tua app", "Costruiamo insieme una piccola app per il telefono, solo per te. Basta descrivere cosa deve fare."],
-      ["Fermata 4", "Cosa succede a Berna?", "L'AI ti segnala automaticamente eventi, mercati e manifestazioni in città. Così sai dove si fa festa e dove il bus non passa."],
-      ["Fermata 5", "La tua canzone", "Una canzone su di te, sul tuo bus o sui tuoi 60 anni. L'AI la scrive e la canta in un minuto."],
+      ["Fermata 2", "Il Salva-Sugo 🍝", "Un italiano trova sempre un sugo. Ti costruiamo la tua piccola app: fotografi il frigo e lei ti dice come trasformare gli avanzi in un sugo per la pasta. Due carote, mezzo peperone e un po' di panna? Ecco la cena!"],
+      ["Fermata 3", "Cosa succede a Berna?", "L'AI ti segnala automaticamente eventi, mercati e manifestazioni in città. Così sai dove si fa festa e dove il bus non passa."],
+      ["Fermata 4", "La tua canzone", "Una canzone su di te, sul tuo bus o sui tuoi 60 anni. L'AI la scrive e la canta in un minuto."],
       ["Capolinea", "Aperitivo 🥂", "E alla fine chiediamo all'AI cosa bere."]
     ],
+    h3: "Il tuo percorso 🗺️",
+    sub3: "Decidi tu dove fermarci. Spunta le fermate, saltane qualcuna o aggiungi corse extra.",
+    extras: ["Pianificare le vacanze in cinque minuti", "Restaurare e colorare una vecchia foto", "Riconoscere le piante con una foto", "Traduttore dal vivo per le prossime vacanze"],
+    apero: "Aperitivo (non negoziabile 🥂)",
+    extraLabel: "Corse extra",
+    ideaLabel: "Un tuo desiderio",
+    ideaPh: "p.es. qualcosa per il giardino …",
+    copyBtn: "📋 Copia e manda ad Alex",
+    shareBtn: "📤 Manda subito ad Alex",
+    copied: "<strong>Copiato!</strong> Ora incollalo su WhatsApp e mandalo ad Alex.",
+    copyHead: "Ciao Alex! 🎫 Riscatto il mio buono AI. Ecco il mio percorso:",
+    copyIdea: "Un mio desiderio",
+    copyEnd: "Quando partiamo? 🚌\nFrancesco",
     footer: "Con tanto affetto da Alex · Valido su tutte le linee, da Berna all'Appenzello 🚌"
   }
 };
@@ -294,6 +338,58 @@ function render() {
     `<li class="stop${i === t.stops.length - 1 ? " end" : ""}"><div class="t">${s[0]}</div><div class="n">${s[1]}</div><div class="d">${s[2]}</div></li>`
   ).join("");
   if (stamped) { btn.innerHTML = t.btnDone; btn.disabled = true; ticket.classList.add("stamped"); msg.classList.add("show"); }
+  renderChecklist(t);
+  document.getElementById("idea").placeholder = t.ideaPh;
+}
+
+/* "Deine Route" checklist */
+const picked = new Set(T.de.stops.slice(0, -1).map((_, i) => "s" + i));
+function item(key, text, checked, disabled) {
+  return `<label class="check"><input type="checkbox" data-k="${key}"${checked ? " checked" : ""}${disabled ? " disabled" : ""}><span>${text}</span></label>`;
+}
+function renderChecklist(t) {
+  const stops = t.stops.slice(0, -1).map((s, i) => item("s" + i, s[1], picked.has("s" + i)));
+  const extras = t.extras.map((x, i) => item("x" + i, x, picked.has("x" + i)));
+  document.getElementById("checklist").innerHTML =
+    `<div class="grp">${t.h2.replace(/\s*🚏/, "")}</div>` + stops.join("") +
+    `<div class="grp">${t.extraLabel}</div>` + extras.join("") +
+    item("apero", t.apero, true, true);
+}
+document.getElementById("checklist").addEventListener("change", e => {
+  const k = e.target.dataset.k;
+  if (!k) return;
+  e.target.checked ? picked.add(k) : picked.delete(k);
+});
+
+function routeText() {
+  const t = T[lang], lines = [t.copyHead];
+  t.stops.slice(0, -1).forEach((s, i) => { if (picked.has("s" + i)) lines.push("✅ " + s[1]); });
+  t.extras.forEach((x, i) => { if (picked.has("x" + i)) lines.push("✅ " + x); });
+  lines.push("✅ " + t.apero);
+  const idea = document.getElementById("idea").value.trim();
+  if (idea) lines.push("", t.copyIdea + ": " + idea);
+  lines.push("", t.copyEnd);
+  return lines.join("\n");
+}
+const copied = document.getElementById("copied");
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  const text = routeText();
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {}
+  if (!ok) {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { ok = document.execCommand("copy"); } catch (e) {}
+    ta.remove();
+  }
+  if (ok) { copied.classList.remove("show"); void copied.offsetWidth; copied.classList.add("show"); }
+  else { prompt("", text); }
+});
+const shareBtn = document.getElementById("shareBtn");
+if (navigator.share) {
+  shareBtn.hidden = false;
+  shareBtn.addEventListener("click", () => { navigator.share({ text: routeText() }).catch(() => {}); });
 }
 
 document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
