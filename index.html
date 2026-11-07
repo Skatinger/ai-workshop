@@ -29,23 +29,24 @@
   .lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
 
   /* street with driving cars */
-  .street{position:relative;height:96px;margin:6px -18px 0;overflow:hidden;
-    background:linear-gradient(#f3ede3 0 55%,#cfc8bd 55% 100%)}
-  .street::after{content:"";position:absolute;left:0;right:0;top:76%;height:4px;
+  .street{position:relative;height:130px;margin:6px -18px 0;overflow:hidden;
+    background:linear-gradient(#f3ede3 0 50%,#cfc8bd 50% 100%)}
+  .street::after{content:"";position:absolute;left:0;right:0;top:74%;height:4px;
     background:repeating-linear-gradient(90deg,#fff 0 28px,transparent 28px 56px)}
-  .car{position:absolute;bottom:22px;left:-160px;font-size:40px;animation:drive linear infinite}
-  .car .plate{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);
+  .street .rails{position:absolute;left:0;right:0;top:61%;height:6px;border-top:2px solid #8d867c;border-bottom:2px solid #8d867c}
+  .car{position:absolute;bottom:12px;left:-120px;font-size:38px;animation:drive linear infinite;z-index:3}
+  .car .emo{display:inline-block;transform:scaleX(-1)}
+  .car .plate{position:absolute;left:50%;bottom:-12px;transform:translateX(-50%);
     background:#fff;border:1.5px solid #222;border-radius:3px;font-size:10px;font-weight:800;
-    padding:0 4px;white-space:nowrap;letter-spacing:.04em}
-  .car.bus{font-size:52px;bottom:18px;animation-duration:11s;z-index:2}
-  .car.bus .plate{background:var(--yellow)}
+    padding:0 4px;white-space:nowrap;letter-spacing:.04em;line-height:1.4}
   .car.c1{animation-duration:7s;animation-delay:-2s}
   .car.c2{animation-duration:9s;animation-delay:-6s}
   .car.c3{animation-duration:6s;animation-delay:-4s}
-  @keyframes drive{from{transform:translateX(0) scaleX(-1)}to{transform:translateX(calc(100vw + 320px)) scaleX(-1)}}
-  .car .plate{transform:translateX(-50%) scaleX(-1)}
-  @media (min-width:600px){@keyframes drive{from{transform:translateX(0) scaleX(-1)}to{transform:translateX(900px) scaleX(-1)}}}
-  @media (prefers-reduced-motion:reduce){.car{animation:none;left:auto}.car.bus{left:40%}.car.c1{left:10%}.car.c2{left:70%}.car.c3{display:none}}
+  @keyframes drive{from{left:-120px}to{left:100%}}
+  .vehicle{position:absolute;bottom:46px;left:-300px;animation:ride 9s linear infinite;z-index:2;line-height:0}
+  .vehicle svg{display:block;height:68px;width:auto}
+  @keyframes ride{from{left:-300px}to{left:100%}}
+  @media (prefers-reduced-motion:reduce){.car,.vehicle{animation:none}.vehicle{left:8%}.car.c1{left:10%}.car.c2{left:55%}.car.c3{display:none}}
 
   h1{font-size:clamp(28px,7vw,40px);line-height:1.1;margin:22px 0 10px}
   h1 .accent{color:var(--red)}
@@ -117,10 +118,11 @@
   </div>
 
   <div class="street" aria-hidden="true">
-    <div class="car c1">🚗<span class="plate">AI 60</span></div>
-    <div class="car c2">🚙<span class="plate">AI 1966</span></div>
-    <div class="car c3">🚕<span class="plate">AI 42</span></div>
-    <div class="car bus">🚌<span class="plate">FRANCESCO</span></div>
+    <div class="rails"></div>
+    <div class="vehicle" id="vehicle"></div>
+    <div class="car c1"><span class="emo">🚗</span><span class="plate">AI 60</span></div>
+    <div class="car c2"><span class="emo">🚙</span><span class="plate">AI 1966</span></div>
+    <div class="car c3"><span class="emo">🚕</span><span class="plate">AI 42</span></div>
   </div>
 
   <h1 data-i="title"></h1>
@@ -136,7 +138,8 @@
       <div class="field"><div class="k" data-i="kValid"></div><div class="v" data-i="vValid"></div></div>
       <div class="field"><div class="k" data-i="kZone"></div><div class="v" data-i="vZone"></div></div>
       <div class="field"><div class="k" data-i="kPrice"></div><div class="v" data-i="vPrice"></div></div>
-      <div class="field wide"><div class="k" data-i="kCrew"></div><div class="v">Alex &amp; Chrige</div></div>
+      <div class="field"><div class="k" data-i="kCrew"></div><div class="v">Alex</div></div>
+      <div class="field"><div class="k" data-i="kGuest"></div><div class="v">Chrige</div></div>
     </div>
     <div class="perf"></div>
     <div class="ticket-foot">
@@ -153,8 +156,6 @@
   <p class="sub" data-i="sub"></p>
   <ol class="route" id="route"></ol>
 
-  <div class="note" data-i="note"></div>
-
   <footer data-i="footer"></footer>
 </div>
 
@@ -165,54 +166,54 @@ const T = {
     title: 'Lieber Francesco,<br><span class="accent">happy 60!</span> 🎉',
     lead: `<p>Du hast es sicher schon bemerkt: <strong>AI ist überall.</strong> Sogar auf den Nummernschildern.</p>
            <p>Darum steigt jetzt nicht nur ein Fahrgast bei dir ein, sondern gleich die künstliche Intelligenz.</p>
-           <p>Dieser Gutschein ist dein Ticket für einen <strong>persönlichen KI-Workshop mit Alex und Chrige</strong>. Kein Kurs, keine Prüfung, kein Fachchinesisch. Nur wir drei, ein Kaffee und ein paar verblüffende Tricks, mit denen ChatGPT ab sofort für dich arbeitet.</p>`,
+           <p>Dieser Gutschein ist dein Ticket für einen <strong>persönlichen KI-Workshop mit Alex</strong>, und Chrige fährt auch mit. Kein Kurs, keine Prüfung, kein Fachchinesisch. Nur wir, ein Kaffee und ein paar verblüffende Tricks, mit denen die KI ab sofort für dich arbeitet.</p>`,
     line: "LINIE AI",
     kPassenger: "Fahrgast", kValid: "Gültig ab", vValid: "60 Jahren",
     kZone: "Zone", vZone: "Alle Zonen", kPrice: "Preis", vPrice: "Unbezahlbar",
-    kCrew: "Chauffeure für einen Tag",
+    kCrew: "Chauffeur", kGuest: "Mitfahrerin",
     stamp: "Entwertet",
     btn: "🎫 Ticket entwerten",
     btnDone: "✅ Ticket entwertet",
-    msg: "<strong>Gute Fahrt!</strong> Dein Gutschein ist eingelöst. Sag Alex oder Chrige Bescheid, dann machen wir einen Termin ab.",
+    msg: "<strong>Gute Fahrt!</strong> Dein Gutschein ist eingelöst. Sag Alex Bescheid, dann machen wir einen Termin ab.",
     h2: "Fahrplan 🚏",
     sub: "Unsere Route durch den Workshop. Abfahrt nach Lust und Laune, Verspätungen ausdrücklich erlaubt.",
     stops: [
-      ["Abfahrt", "Hallo ChatGPT", "Wir zeigen dir, wie du einfach mit der KI plauderst, ganz ohne Programmieren."],
-      ["Halt 1", "Kühlschrank-Kunst", "Foto vom Kühlschrank machen, und die KI schlägt ein Znacht vor."],
-      ["Halt 2", "Briefe ohne Kopfweh", "Mail an die Versicherung oder ein Gruss an die Familie, in Sekunden geschrieben."],
-      ["Halt 3", "Ferien im Handumdrehen", "Reiseplan, Restaurants und Ausflüge, massgeschneidert für dich."],
-      ["Halt 4", "Bilder-Zauberei", "Wir lassen die KI ein Bild malen. Vielleicht einen Bus voller AI-Autos?"],
-      ["Endstation", "Apéro 🥂", "Mit allem, was du gelernt hast, darfst du die KI gleich fragen, was wir trinken."]
+      ["Abfahrt", "Hallo KI", "Wie man mit ChatGPT & Co. einfach drauflos plaudert, ganz ohne Programmieren."],
+      ["Halt 1", "Kollegen-Kunst", "Ein Foto vom Arbeitskollegen, und die KI macht ihn zum Astronauten, Ritter oder Tramchauffeur. Lachen garantiert."],
+      ["Halt 2", "Kühlschrank-Znacht", "Foto vom Kühlschrank machen, und die KI schlägt vor, was man daraus kochen kann."],
+      ["Halt 3", "Deine eigene App", "Wir bauen zusammen eine kleine Handy-App, nur für dich. Einfach beschreiben, was sie können soll."],
+      ["Halt 4", "Was läuft in Bern?", "Die KI meldet dir automatisch Events, Märkte und Demos in der Stadt. Damit du weisst, wo heute gefeiert wird und wo der Bus nicht durchkommt."],
+      ["Halt 5", "Dein eigener Song", "Ein Lied über dich, deinen Bus oder deinen 60. Geburtstag. Die KI schreibt und singt es in einer Minute."],
+      ["Endstation", "Apéro 🥂", "Und zum Schluss fragen wir die KI, was wir trinken sollen."]
     ],
-    note: "💡 Kleiner Tipp: Du brauchst nichts vorzubereiten. Nur dein Handy und gute Laune mitbringen.",
-    footer: "Mit viel Liebe von Alex &amp; Chrige · Gültig auf allen Linien, von Bern bis Appenzell 🚌"
+    footer: "Mit viel Liebe von Alex · Gültig auf allen Linien, von Bern bis Appenzell 🚌"
   },
   it: {
     brand: "Linea AI",
     title: 'Caro Francesco,<br><span class="accent">buon 60°!</span> 🎉',
     lead: `<p>L'avrai già notato: <strong>l'AI è dappertutto.</strong> Perfino sulle targhe.</p>
            <p>Per questo, oggi sul tuo bus non sale solo un passeggero, ma direttamente l'intelligenza artificiale.</p>
-           <p>Questo buono è il tuo biglietto per un <strong>workshop personale sull'AI con Alex e Chrige</strong>. Niente corsi, niente esami, niente paroloni. Solo noi tre, un caffè e qualche trucco sorprendente per far lavorare ChatGPT per te.</p>`,
+           <p>Questo buono è il tuo biglietto per un <strong>workshop personale sull'AI con Alex</strong>, e anche Chrige sale a bordo. Niente corsi, niente esami, niente paroloni. Solo noi, un caffè e qualche trucco sorprendente per far lavorare l'AI per te.</p>`,
     line: "LINEA AI",
     kPassenger: "Passeggero", kValid: "Valido da", vValid: "60 anni",
     kZone: "Zona", vZone: "Tutte le zone", kPrice: "Prezzo", vPrice: "Inestimabile",
-    kCrew: "Autisti per un giorno",
+    kCrew: "Autista", kGuest: "Passeggera",
     stamp: "Obliterato",
     btn: "🎫 Oblitera il biglietto",
     btnDone: "✅ Biglietto obliterato",
-    msg: "<strong>Buon viaggio!</strong> Il tuo buono è riscattato. Dillo ad Alex o a Chrige e fissiamo una data.",
+    msg: "<strong>Buon viaggio!</strong> Il tuo buono è riscattato. Dillo ad Alex e fissiamo una data.",
     h2: "Orario 🚏",
     sub: "Il nostro percorso nel workshop. Partenza quando vuoi, ritardi espressamente permessi.",
     stops: [
-      ["Partenza", "Ciao ChatGPT", "Ti mostriamo come chiacchierare con l'AI, senza programmare niente."],
-      ["Fermata 1", "Arte del frigorifero", "Fai una foto al frigo e l'AI ti propone la cena."],
-      ["Fermata 2", "Lettere senza mal di testa", "Una mail all'assicurazione o un saluto alla famiglia, scritti in pochi secondi."],
-      ["Fermata 3", "Vacanze in un attimo", "Itinerario, ristoranti e gite, su misura per te."],
-      ["Fermata 4", "Magia delle immagini", "Facciamo dipingere un quadro all'AI. Magari un bus pieno di macchine AI?"],
-      ["Capolinea", "Aperitivo 🥂", "Con tutto quello che hai imparato, puoi chiedere subito all'AI cosa beviamo."]
+      ["Partenza", "Ciao AI", "Come chiacchierare con ChatGPT & co., senza programmare niente."],
+      ["Fermata 1", "Ritratti tra colleghi", "Una foto di un collega e l'AI lo trasforma in astronauta, cavaliere o tranviere. Risate garantite."],
+      ["Fermata 2", "Cena dal frigo", "Fai una foto al frigorifero e l'AI ti propone cosa cucinare."],
+      ["Fermata 3", "La tua app", "Costruiamo insieme una piccola app per il telefono, solo per te. Basta descrivere cosa deve fare."],
+      ["Fermata 4", "Cosa succede a Berna?", "L'AI ti segnala automaticamente eventi, mercati e manifestazioni in città. Così sai dove si fa festa e dove il bus non passa."],
+      ["Fermata 5", "La tua canzone", "Una canzone su di te, sul tuo bus o sui tuoi 60 anni. L'AI la scrive e la canta in un minuto."],
+      ["Capolinea", "Aperitivo 🥂", "E alla fine chiediamo all'AI cosa bere."]
     ],
-    note: "💡 Un piccolo consiglio: non devi preparare niente. Porta solo il telefono e il buon umore.",
-    footer: "Con tanto affetto da Alex &amp; Chrige · Valido su tutte le linee, da Berna all'Appenzello 🚌"
+    footer: "Con tanto affetto da Alex · Valido su tutte le linee, da Berna all'Appenzello 🚌"
   }
 };
 
@@ -221,8 +222,60 @@ try {
   const q = new URLSearchParams(location.search).get("lang");
   const saved = localStorage.getItem("lang");
   if (q === "it" || q === "de") lang = q; else if (saved === "it" || saved === "de") lang = saved;
+  if (new URLSearchParams(location.search).has("reset")) {
+    localStorage.removeItem("stamped");
+    history.replaceState(null, "", location.pathname);
+  }
   stamped = localStorage.getItem("stamped") === "1";
 } catch (e) {}
+
+/* Francesco's vehicle: red articulated bus or red tram, alternating */
+const BUS = `<svg viewBox="0 0 230 74" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect x="4" y="6" width="104" height="54" rx="7" fill="#d7171f"/>
+  <rect x="116" y="6" width="110" height="54" rx="7" fill="#d7171f"/>
+  <path d="M220 6h-4a10 10 0 0 1 10 10v36h0V16a10 10 0 0 0-6-10z" fill="#a80f15"/>
+  <rect x="106" y="10" width="12" height="48" fill="#555"/>
+  <path d="M108 12v44M111 12v44M114 12v44" stroke="#888" stroke-width="1"/>
+  <rect x="4" y="6" width="222" height="5" fill="#a80f15"/>
+  <g fill="#bfe0f2">
+    <rect x="12" y="16" width="18" height="18" rx="2"/><rect x="34" y="16" width="18" height="18" rx="2"/>
+    <rect x="72" y="16" width="18" height="18" rx="2"/><rect x="124" y="16" width="18" height="18" rx="2"/>
+    <rect x="164" y="16" width="18" height="18" rx="2"/><rect x="186" y="16" width="18" height="18" rx="2"/>
+    <rect x="210" y="14" width="14" height="30" rx="3"/>
+  </g>
+  <g fill="#7fb4cf"><rect x="54" y="16" width="14" height="38" rx="1"/><rect x="146" y="16" width="14" height="38" rx="1"/></g>
+  <circle cx="216" cy="23" r="4" fill="#f2c9a0"/><rect x="212" y="27" width="8" height="8" rx="2" fill="#1d1d1f"/>
+  <rect x="150" y="1" width="58" height="9" rx="2" fill="#111"/>
+  <text x="179" y="8.3" font-family="monospace" font-size="7.5" font-weight="700" fill="#ffb300" text-anchor="middle">AI 60</text>
+  <rect x="222" y="48" width="5" height="4" fill="#fff6c0"/>
+  <g fill="#222"><circle cx="30" cy="61" r="9"/><circle cx="90" cy="61" r="9"/><circle cx="196" cy="61" r="9"/></g>
+  <g fill="#999"><circle cx="30" cy="61" r="4"/><circle cx="90" cy="61" r="4"/><circle cx="196" cy="61" r="4"/></g>
+</svg>`;
+const TRAM = `<svg viewBox="0 0 300 74" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M150 12 L138 2 L162 2 L150 12" fill="none" stroke="#333" stroke-width="1.6"/>
+  <rect x="132" y="0" width="36" height="2" fill="#333"/>
+  <rect x="4" y="12" width="94" height="50" rx="5" fill="#d7171f"/>
+  <rect x="102" y="12" width="94" height="50" rx="5" fill="#d7171f"/>
+  <path d="M206 12h70a20 20 0 0 1 20 20v30H206z" fill="#d7171f"/>
+  <rect x="96" y="16" width="8" height="44" fill="#555"/><rect x="194" y="16" width="14" height="44" fill="#555"/>
+  <rect x="4" y="12" width="292" height="4" fill="#a80f15"/>
+  <rect x="4" y="50" width="292" height="4" fill="#fff" opacity=".85"/>
+  <g fill="#bfe0f2">
+    <rect x="10" y="20" width="22" height="20" rx="2"/><rect x="58" y="20" width="22" height="20" rx="2"/>
+    <rect x="108" y="20" width="22" height="20" rx="2"/><rect x="166" y="20" width="22" height="20" rx="2"/>
+    <rect x="212" y="20" width="22" height="20" rx="2"/><path d="M262 20h14a14 14 0 0 1 14 14v6h-28z"/>
+  </g>
+  <g fill="#7fb4cf"><rect x="36" y="20" width="18" height="34" rx="1"/><rect x="136" y="20" width="24" height="34" rx="1"/><rect x="238" y="20" width="18" height="34" rx="1"/></g>
+  <circle cx="276" cy="28" r="4" fill="#f2c9a0"/><rect x="272" y="32" width="8" height="8" rx="2" fill="#1d1d1f"/>
+  <rect x="226" y="2" width="58" height="9" rx="2" fill="#111"/>
+  <text x="255" y="9.3" font-family="monospace" font-size="7.5" font-weight="700" fill="#ffb300" text-anchor="middle">AI 60</text>
+  <g fill="#333"><circle cx="24" cy="66" r="6"/><circle cx="76" cy="66" r="6"/><circle cx="150" cy="66" r="6"/><circle cx="226" cy="66" r="6"/><circle cx="276" cy="66" r="6"/></g>
+</svg>`;
+const vehicle = document.getElementById("vehicle");
+let tramNext = Math.random() < 0.5;
+function nextVehicle() { vehicle.innerHTML = tramNext ? TRAM : BUS; tramNext = !tramNext; }
+nextVehicle();
+vehicle.addEventListener("animationiteration", nextVehicle);
 
 const btn = document.getElementById("stampBtn");
 const msg = document.getElementById("msg");
