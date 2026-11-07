@@ -172,8 +172,7 @@
   <p class="sub" data-i="sub3"></p>
   <div class="checklist" id="checklist"></div>
   <label class="idea"><span data-i="ideaLabel"></span><input id="idea" type="text" maxlength="200"></label>
-  <button class="btn" id="copyBtn" type="button" data-i="copyBtn"></button>
-  <button class="btn secondary" id="shareBtn" type="button" data-i="shareBtn" hidden></button>
+  <button class="btn" id="shareBtn" type="button" data-i="shareBtn"></button>
   <div class="msg" id="copied" role="status" data-i="copied"></div>
 
   <footer data-i="footer"></footer>
@@ -194,7 +193,7 @@ const T = {
     stamp: "Entwertet",
     btn: "🎫 Ticket entwerten",
     btnDone: "✅ Ticket entwertet",
-    msg: "<strong>Gute Fahrt!</strong> Dein Gutschein ist eingelöst. Stell unten deine Route zusammen und schick sie Alex. 👇",
+    msg: "<strong>Gute Fahrt!</strong> Dein Gutschein ist eingelöst. Stell unten deine Route zusammen und melde dich an. 👇",
     h2: "Fahrplan 🚏",
     sub: "Unsere Route durch den Workshop. Abfahrt nach Lust und Laune, Verspätungen ausdrücklich erlaubt.",
     stops: [
@@ -212,8 +211,7 @@ const T = {
     extraLabel: "Extrafahrten",
     ideaLabel: "Eigener Wunsch",
     ideaPh: "z.B. etwas für den Garten …",
-    copyBtn: "📋 Kopieren und Alex schicken",
-    shareBtn: "📤 Direkt an Alex senden",
+    shareBtn: "📤 Jetzt anmelden!",
     copied: "<strong>Kopiert!</strong> Jetzt einfach im WhatsApp an Alex einfügen und senden.",
     copyHead: "Hoi Alex! 🎫 Ich löse meinen KI-Gutschein ein. Das ist meine Route:",
     copyIdea: "Eigener Wunsch",
@@ -233,7 +231,7 @@ const T = {
     stamp: "Obliterato",
     btn: "🎫 Oblitera il biglietto",
     btnDone: "✅ Biglietto obliterato",
-    msg: "<strong>Buon viaggio!</strong> Il tuo buono è riscattato. Componi qui sotto il tuo percorso e mandalo ad Alex. 👇",
+    msg: "<strong>Buon viaggio!</strong> Il tuo buono è riscattato. Componi qui sotto il tuo percorso e prenota. 👇",
     h2: "Orario 🚏",
     sub: "Il nostro percorso nel workshop. Partenza quando vuoi, ritardi espressamente permessi.",
     stops: [
@@ -251,8 +249,7 @@ const T = {
     extraLabel: "Corse extra",
     ideaLabel: "Un tuo desiderio",
     ideaPh: "p.es. qualcosa per il giardino …",
-    copyBtn: "📋 Copia e manda ad Alex",
-    shareBtn: "📤 Manda subito ad Alex",
+    shareBtn: "📤 Prenota ora!",
     copied: "<strong>Copiato!</strong> Ora incollalo su WhatsApp e mandalo ad Alex.",
     copyHead: "Ciao Alex! 🎫 Riscatto il mio buono AI. Ecco il mio percorso:",
     copyIdea: "Un mio desiderio",
@@ -372,39 +369,20 @@ function routeText() {
   return lines.join("\n");
 }
 const copied = document.getElementById("copied");
-document.getElementById("copyBtn").addEventListener("click", async () => {
-  const text = routeText();
-  let ok = false;
-  try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {}
-  if (!ok) {
-    const ta = document.createElement("textarea");
-    ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
-    document.body.appendChild(ta); ta.select();
-    try { ok = document.execCommand("copy"); } catch (e) {}
-    ta.remove();
-  }
-  if (ok) { copied.classList.remove("show"); void copied.offsetWidth; copied.classList.add("show"); }
-  else { prompt("", text); }
-});
-const shareBtn = document.getElementById("shareBtn");
-if (navigator.share) {
-  shareBtn.hidden = false;
-  shareBtn.addEventListener("click", () => { navigator.share({ text: routeText() }).catch(() => {}); });
+async function copyRoute(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  ta.remove(); return ok;
 }
-
-document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
-  lang = b.dataset.lang;
-  try { localStorage.setItem("lang", lang); } catch (e) {}
-  render();
-}));
-
-btn.addEventListener("click", () => {
-  if (stamped) return;
-  stamped = true;
-  try { localStorage.setItem("stamped", "1"); } catch (e) {}
-  if (navigator.vibrate) navigator.vibrate(60);
-  render();
-  confetti();
+document.getElementById("shareBtn").addEventListener("click", async () => {
+  const text = routeText();
+  if (navigator.share) { navigator.share({ text }).catch(() => {}); return; }
+  /* no share menu (e.g. desktop): copy instead */
+  if (await copyRoute(text)) { copied.classList.remove("show"); void copied.offsetWidth; copied.classList.add("show"); }
+  else { prompt("", text); }
 });
 
 /* tiny confetti */
